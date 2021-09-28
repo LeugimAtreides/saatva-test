@@ -1,0 +1,90 @@
+@use 'sass:math'
+@import "./typography"
+@import "./base"
+@import "./colors"
+
+%btn-common
+    display: inline-flex
+    justify-content: center
+    align-items: center
+    border-radius: 0px
+    line-height: normal
+    font-weight: $regular
+    font-style: $base-font-family
+    transition: all 0.25s
+    text-align: center
+    white-space: nowrap
+    cursor: pointer
+    touch-action: manipulation
+    outline: none
+    user-select: none
+    &:disabled
+        cursor: not-allowed
+
+@mixin get_size($height, $font)
+  $padding: math.div($height - $font * 1.4, 2)
+  padding: 0 $padding
+  height: $height
+  font-size: $font
+
+@mixin btn_m
+    @include get_size(44px, 16px)
+@mixin btn_xl
+    @include get_size(56px, 32px)
+
+.btn-xl
+    @extend %btn-common
+    @include btn_xl
+.btn-m
+    @extend %btn-common
+    @include btn_m
+
+
+$btn_color: (addToCart: $color-2, selectType: $color-5)
+
+$btn_color_secondary: (addToCart: $color-5, selectType: $color-3)
+
+@function tint($color, $percentage)
+    @return mix(white, $color, $percentage)
+
+@function shade($color, $percentage)
+    @return mix(black, $color, $percentage)
+
+@mixin btn_saatva($name, $color, $secondary-color)
+    .is-not-mobile
+        .btn-line-#{$name}
+            &:hover
+                background-color: tint($color, 10%)
+                border-color: shade($color, 10%)
+                color: $color-5
+    .btn-#{$name}
+        background-color: transparent
+        border: 1px solid $color
+        color: $color
+        &.is-active
+            background-color: shade($color, 10%)
+            border: 1px solid $color
+            color: $color-5
+        &:disabled
+            background-color: transparent
+            border: 1px solid $color
+            color: $color
+            opacity: 0.33
+    .btn-#{$name}-secondary
+        background-color: transparent
+        border: 1px solid $secondary-color
+        color: $secondary-color
+        &.is-active
+            background-color: shade($secondary-color, 10%)
+            border: 1px solid $secondary-color
+            color: $color
+        &:disabled
+            background-color: transparent
+            border: 1px solid $secondary-color
+            color: $secondary-color
+            opacity: 0.33
+
+@each $name, $color in $btn_color
+
+    @include btn_saatva($name, map-get($btn_color, $name) , map-get($btn_color_secondary, $name) )
+    
